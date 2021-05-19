@@ -88,7 +88,7 @@ namespace FactorioSpaceExplorationDeducer
             var destVectorRichtingFoenestra = new Sv(expectedValues[0], expectedValues[1], expectedValues[2]);
             var destVectorTerug = new Sv(-expectedValues[0], -expectedValues[1], -expectedValues[2]);
 
-            var dest = destVectorTerug;
+            var dest = destVectorRichtingFoenestra;
 
             var summedList = it
                 .Select(t => new { ItemsToSelect = it, Data = coords.GetElementsAt(t) })
