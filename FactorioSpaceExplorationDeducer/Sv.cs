@@ -22,6 +22,24 @@ namespace FactorioSpaceExplorationDeducer
             }
             return c;
         }
+
+        private Sv _normalized;
+        public Sv Normalized
+        {
+            get
+            {
+                if (_normalized == null)
+                {
+                    _normalized = new Sv(X / (decimal)VectorLength, Y / (decimal)VectorLength, Z / (decimal)VectorLength);
+                }
+                return _normalized;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"({X},{Y},{Z})";
+        }
     }
 
     public class Sv2

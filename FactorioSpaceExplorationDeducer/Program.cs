@@ -10,6 +10,7 @@ namespace FactorioSpaceExplorationDeducer
 
             Spacu s = new Spacu();
             //s.Go();
+            s.Go5();
             s.Go2();
             s.Go4();
         }

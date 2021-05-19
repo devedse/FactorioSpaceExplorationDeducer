@@ -53,36 +53,64 @@ namespace FactorioSpaceExplorationDeducer
                 new Sv(v[6], v[2], -v[3]), //Eerste zonder 0
                 new Sv(v[6], -v[2], v[3]),
                 new Sv(-v[1], -v[5], -v[4]),
-                new Sv(v[3], -v[6], v[2])
+                new Sv(v[3], -v[6], v[2]),
+                new Sv(-v[2], -v[3], v[6])
             };
+        }
+
+        public void Go5()
+        {
+            var itt = new CombinationIterator(2, 4);
+
+            int i = 0;
+            foreach (var it in itt)
+            {
+                Console.WriteLine($"{i}: {string.Join(",", it)}");
+                i++;
+            }
         }
 
         public void Go4()
         {
-            for (int i = 8; i < 64; i++)
-            {
-                var w = Stopwatch.StartNew();
-                var itt = new CombinationIterator(8, i);
-                var data = itt.ToList();
-                w.Stop();
-                Console.WriteLine($"{i}: duration: {w.Elapsed} length: {data.Count}");
-            }
+            //for (int i = 8; i < 64; i++)
+            //{
+            //    var w = Stopwatch.StartNew();
+            //    var itt = new CombinationIterator(8, i);
+            //    var data = itt.ToList();
+            //    w.Stop();
+            //    Console.WriteLine($"{i}: duration: {w.Elapsed} length: {data.Count}");
+            //}
 
 
 
             var it = new CombinationIterator(8, coords.Count);
 
+            var destVectorRichtingFoenestra = new Sv(expectedValues[0], expectedValues[1], expectedValues[2]);
+            var destVectorTerug = new Sv(-expectedValues[0], -expectedValues[1], -expectedValues[2]);
+
+            var dest = destVectorTerug;
+
             var summedList = it
                 .Select(t => new { ItemsToSelect = it, Data = coords.GetElementsAt(t) })
                 .Select(t => new { ItemsToSelect = t.ItemsToSelect, Data = t.Data, Sum = SumSv(t.Data) })
+                .OrderBy(t => DistTwoVectors(dest, t.Sum.Normalized))
                 .ToList();
 
-            foreach(var item in it)
+
+            var testestje = coords.GetElementsAt(Enumerable.Range(0, 8)).ToList();
+            var sum = SumSv(testestje);
+            var norm = sum.Normalized;
+
+
+
+            var sb = new StringBuilder();
+            foreach (var val in summedList)
             {
-                var itemsToPlus = coords.GetElementsAt(item);
-                SumSv(itemsToPlus);
-              
+                var line = $"{val.Sum.Normalized} ({DistTwoVectors(dest, val.Sum.Normalized)}) {val.Sum} ({string.Join(",", val.Data)})";
+                sb.AppendLine(line);
+                //Console.WriteLine(line);
             }
+            File.WriteAllText("Outputje123123.txt", sb.ToString());
         }
 
         public void Go3()
@@ -98,11 +126,20 @@ namespace FactorioSpaceExplorationDeducer
 
         }
 
+        public decimal DistTwoVectors(Sv a, Sv b)
+        {
+            var x = Math.Abs(a.X - b.X);
+            var y = Math.Abs(a.Y - b.Y);
+            var z = Math.Abs(a.Z - b.Z);
+            return x + y + z;
+        }
+
         public void Go2()
         {
             var datatest = Enumerable.Range(0, 13).ToList();
             var zcombos = GetAllCombos(datatest);
-            var zcombos2 = zcombos.Where(t => t.Count == 8).ToList();
+            var zcombos2 = zcombos.Where(t => t.Count == 2).ToList();
+
 
 
             //for (int i = 1; i <= 30; i++)
@@ -167,7 +204,7 @@ namespace FactorioSpaceExplorationDeducer
             return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
         }
 
-       
+
         // Iterative, using 'i' as bitmask to choose each combo members
         public static List<List<T>> GetAllCombos<T>(List<T> list)
         {
